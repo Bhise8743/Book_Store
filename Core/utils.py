@@ -24,4 +24,4 @@ class JWT:
         try:
             return jwt.decode(token,secret_key,algorithms=jwt_algo)
         except JWTError as ex:
-            raise HTTPException(detail=str(ex),status_code=status.HTTP_400_BAD_REQUEST)
+            raise HTTPException(detail=str(ex),status_code=status.HTTP_400_BAD_REQUESTjw)
