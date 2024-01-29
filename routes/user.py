@@ -17,9 +17,7 @@ async def add_user(body: UserSchema, response: Response, db: Session = Depends(g
         Parameter: user : UserSchema  => Schema of the user
                         response : Response  it response to the user
                         db: Session = Depends on the get_db  i.e. he yield the database
-        Return: JSON form dict in that message, status code, data
-    """
-    try:
+        Return: JSON form dict in that mess:
         data = body.model_dump()
         data['password'] = hash_password(data['password'])
         user_super_key = data['super_key']
