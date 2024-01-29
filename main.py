@@ -11,9 +11,14 @@
 @Title :  User Registration
 
 """
-from fastapi import FastAPI
-
+from fastapi import FastAPI,Security,Depends
+from fastapi.security import APIKeyHeader
+from Core.utils import jwt_authentication
 from routes.user import user
-
+from routes.book import book
+# from routes.cart import cart
 app = FastAPI()
 app.include_router(user,prefix='/user')
+app.include_router(book, prefix='/book',
+                   dependencies=[Security(APIKeyHeader(name='authorization')), Depends(jwt_authentication)])
+# app.include_router(cart,prefix='/cart',dependencies=[Security(APIKeyHeader(name='authorization')), Depends(jwt_authentication)])
