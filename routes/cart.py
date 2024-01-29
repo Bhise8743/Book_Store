@@ -4,7 +4,6 @@ from fastapi import APIRouter, status, Response, Request, Depends, HTTPException
 from sqlalchemy.orm import Session
 from schema import CartItemsSchema
 from model import get_db, Cart, Book, CartItems, User
-from Core.utils import JWT
 from task import email_notification
 
 cart = APIRouter()
