@@ -13,12 +13,12 @@ celery = Celery(
 mail=EmailMessage()
 
 @celery.task()
-def email_notification(recipient,link,subject):
+def email_notification(recipient,message,subject):
     mail['From'] = email_sender
     mail['To'] = recipient
     mail['Subject'] = subject
 
-    mail.set_content(link)
+    mail.set_content(message)
     context = ssl.create_default_context()
 
     with smtplib.SMTP_SSL('smtp.gmail.com',465,context=context) as smtp:
