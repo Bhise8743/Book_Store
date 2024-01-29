@@ -44,25 +44,25 @@ class Book(Base):
     user = relationship('User', back_populates='book')
     cart_items=relationship('CartItems',back_populates='book')
 
-# class Cart(Base):
-#     __tablename__ = 'cart'
-#     id = Column(Integer, primary_key=True, autoincrement=True)
-#     total_price = Column(Integer, default=0)
-#     total_quantity = Column(Integer, default=0)
-#     is_ordered = Column(Boolean, default=False)
-#     user_id = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
-#     user = relationship('User', back_populates='cart')
-#     cart_items = relationship('CartItems',back_populates='cart')
+class Cart(Base):
+    __tablename__ = 'cart'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    total_price = Column(Integer, default=0)
+    total_quantity = Column(Integer, default=0)
+    is_ordered = Column(Boolean, default=False)
+    user_id = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    user = relationship('User', back_populates='cart')
+    cart_items = relationship('CartItems',back_populates='cart')
 
-# class CartItems(Base):
-#     __tablename__ = 'cart_items'
-#     id = Column(Integer, primary_key=True, autoincrement=True)
-#     price = Column(Integer, default=0)
-#     quantity = Column(Integer, default=0)
-#     book_id = Column(Integer, ForeignKey('book.id', ondelete='CASCADE'), nullable=False,unique=True)
-#     cart_id = Column(Integer, ForeignKey('cart.id', ondelete='CASCADE'), nullable=False)
-#     book = relationship('Book', back_populates='cart_items')
-#     cart = relationship('Cart', back_populates='cart_items')
+class CartItems(Base):
+    __tablename__ = 'cart_items'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    price = Column(Integer, default=0)
+    quantity = Column(Integer, default=0)
+    book_id = Column(Integer, ForeignKey('book.id', ondelete='CASCADE'), nullable=False,unique=True)
+    cart_id = Column(Integer, ForeignKey('cart.id', ondelete='CASCADE'), nullable=False)
+    book = relationship('Book', back_populates='cart_items')
+    cart = relationship('Cart', back_populates='cart_items')
 
 
 '''
