@@ -23,6 +23,7 @@ class BookSchema(BaseModel):
     price: int
     quantity: int
 
+
 class CartItemsSchema(BaseModel):
-    book_id :int
-    quantity : int
+    book_id: int
+    quantity: int
