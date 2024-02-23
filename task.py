@@ -14,6 +14,13 @@ mail=EmailMessage()
 
 @celery.task()
 def email_notification(recipient,message,subject):
+    """
+        Description: This function used to send the mail
+        Parameter:  recipient : resiver email
+        message : message of mail
+        subject : subject of the mail
+        Return: string
+    """
     mail['From'] = email_sender
     mail['To'] = recipient
     mail['Subject'] = subject
