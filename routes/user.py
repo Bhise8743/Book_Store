@@ -136,18 +136,3 @@ def change_email(email: str, body: LoginSchema, response: Response, db: Session 
         return {'message': str(ex), 'status': 400}
 
 
-
-
-# @user.get('/order_verify', status_code=status.HTTP_200_OK, tags=["User"])
-# def order_conformation_verification(token: str, response: Response, db: Session = Depends(get_db)):
-#     try:
-#         decoded_data = JWT.data_decoding(token)
-#         user_id = decoded_data.get('user_id')
-#         cart_data = db.query(Cart).filter_by(user_id=user_id).one_or_none()
-#         cart_data.is_ordered = True
-#         db.commit()
-#         return {'Message': "Order Conformed successfully", 'status': 200}
-#     except Exception as ex:
-#         response.status_code = status.HTTP_400_BAD_REQUEST
-#         return {'message': str(ex), 'status': 400}
-
