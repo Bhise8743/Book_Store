@@ -8,6 +8,14 @@ book = APIRouter()
 
 @book.post('/add', status_code=status.HTTP_201_CREATED,tags=["Book"])
 def add_book(body: BookSchema, response: Response, request: Request, db: Session = Depends(get_db)):
+    """
+        Description: This api is used to add the book
+        Parameter: response : Response  it response to the user
+                   db: Session = Depends on the get_db  i.e. he yield the database
+                   request : Request send by the user
+                   body: schema of the book
+        Return: JSON form dict in that message, status code
+    """
     try:
         user = db.query(User).filter_by(id=request.state.user.id).one_or_none()
         if user and not user.is_super_user:
@@ -27,6 +35,14 @@ def add_book(body: BookSchema, response: Response, request: Request, db: Session
 
 @book.get('/get/{id}', status_code=status.HTTP_200_OK,tags=["Book"])
 def get_book(id: int, response: Response, db: Session = Depends(get_db)):
+    """
+        Description: This api is used to get the book using book_id
+        Parameter: response : Response  it response to the user
+                   db: Session = Depends on the get_db  i.e. yield the database
+                   request : Request used to getting all authenticated data
+                   id : get the book id 
+        Return: JSON form dict in that message, status code
+    """
     try:
         book_data = db.query(Book).filter_by(id=id).one_or_none()
         if book_data is None:
@@ -39,6 +55,13 @@ def get_book(id: int, response: Response, db: Session = Depends(get_db)):
 
 @book.get('/get_all', status_code=status.HTTP_200_OK,tags=["Book"])
 def get_all_books(request: Request, response: Response, db: Session = Depends(get_db)):
+    """
+        Description: This api is used to get the all books of the store 
+        Parameter: response : Response  it response to the user
+                   db: Session = Depends on the get_db  i.e. yield the database
+                   request : Request used to getting all authenticated data
+        Return: JSON form dict in that message, status code
+    """
     try:
         books_data = db.query(Book).all()
         if books_data is None:
@@ -51,6 +74,14 @@ def get_all_books(request: Request, response: Response, db: Session = Depends(ge
 
 @book.put('/update/{id}',status_code=status.HTTP_200_OK,tags=["Book"])
 def update_book(id:int,body:BookSchema,request:Request,response:Response,db:Session = Depends(get_db)):
+    """
+        Description: This api is used to update the book data using book_id
+        Parameter: response : Response  it response to the user
+                   db: Session = Depends on the get_db  i.e. yield the database
+                   request : Request used to getting all authenticated data
+                   id : get the book id 
+        Return: JSON form dict in that message, status code
+    """
     try:
         user_data = db.query(User).filter_by(id=request.state.user.id).one_or_none()
         if not user_data.is_super_user:
@@ -69,6 +100,14 @@ def update_book(id:int,body:BookSchema,request:Request,response:Response,db:Sess
 
 @book.delete('/del/{id}',status_code=status.HTTP_200_OK,tags=["Book"])
 def delete_book(id:int,request:Request,response:Response,db:Session = Depends(get_db)):
+    """
+        Description: This api is used to delete the book using book_id
+        Parameter: response : Response  it response to the user
+                   db: Session = Depends on the get_db  i.e. yield the database
+                   request : Request used to getting all authenticated data
+                   id : get the book id 
+        Return: JSON form dict in that message, status code
+    """
     try:
         user_data = db.query(User).filter_by(id=request.state.user.id).one_or_none()
         if not user_data.is_super_user:
