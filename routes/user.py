@@ -60,8 +60,6 @@ def user_login(body: LoginSchema, response: Response, db: Session = Depends(get_
             raise HTTPException(detail="Invalid Username", status_code=status.HTTP_400_BAD_REQUEST)
         if not verify_password(body.password, user_data.password):
             raise HTTPException(detail="Invalid Password", status_code=status.HTTP_400_BAD_REQUEST)
-        # if not user_data.is_verified:
-        #     raise HTTPException(detail="Email is Not Verified", status_code=status.HTTP_400_BAD_REQUEST)
 
         token = JWT.data_encoding({'user_id': user_data.id})
         return {'message': "Login successfully ", 'status': 200, 'access_token': token}
@@ -94,6 +92,14 @@ def email_verification(token: str, response: Response, db: Session = Depends(get
 
 @user.put('/forget/{email}', status_code=status.HTTP_200_OK, tags=["User"])
 def forget_username_password(email: str, body: LoginSchema, response: Response, db: Session = Depends(get_db)):
+    """
+        Description: This function used to create the new note
+        Parameter:  body : LoginSchema (schema)  in that username, password, first_name, last_name, phone, email, city, state, is_verified
+                    request : Request used to getting all authenticated data
+                    response : Response  it response to the user
+                    db: Session = this session  Depends on get_db (yield the database )
+        Return: message, status code and data in the JSON or dict format
+    """
     try:
         user_data = db.query(User).filter_by(email=email).one_or_none()
         if user_data is None:
@@ -111,43 +117,5 @@ def forget_username_password(email: str, body: LoginSchema, response: Response, 
         return {'message': str(ex), 'status': 400}
 
 
-@user.patch('/change_email/{email}', status_code=status.HTTP_200_OK, tags=["User"])
-def change_email(email: str, body: LoginSchema, response: Response, db: Session = Depends(get_db)):
-    try:
-        user_data = db.query(User).filter_by(user_name=body.user_name).one_or_none()
-        if not user_data:
-            raise HTTPException(detail="This is not valid username", status_code=status.HTTP_400_BAD_REQUEST)
-        if not verify_password(body.password, user_data.password):
-            raise HTTPException(detail='Password is Not valid ', status_code=status.HTTP_400_BAD_REQUEST)
-        if not user_data.is_verified:
-            raise HTTPException(detail="You are not verified user ", status_code=status.HTTP_400_BAD_REQUEST)
-        user_data['email'] = email
-        user_data.is_verified = False
-        print("HHII")
-        db.commit()
 
-        token = JWT.data_encoding({'user_id': user_data.id})
-        verification_link = f'http://127.0.0.1:8080/user/verify?token={token}'
-        email_notification.delay(user_data.email, verification_link, 'Email Verification')
-
-        return {'message': 'Email is Changed Successfully', 'status': 200}
-    except Exception as ex:
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return {'message': str(ex), 'status': 400}
-
-
-
-
-# @user.get('/order_verify', status_code=status.HTTP_200_OK, tags=["User"])
-# def order_conformation_verification(token: str, response: Response, db: Session = Depends(get_db)):
-#     try:
-#         decoded_data = JWT.data_decoding(token)
-#         user_id = decoded_data.get('user_id')
-#         cart_data = db.query(Cart).filter_by(user_id=user_id).one_or_none()
-#         cart_data.is_ordered = True
-#         db.commit()
-#         return {'Message': "Order Conformed successfully", 'status': 200}
-#     except Exception as ex:
-#         response.status_code = status.HTTP_400_BAD_REQUEST
-#         return {'message': str(ex), 'status': 400}
 
