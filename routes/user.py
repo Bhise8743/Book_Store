@@ -16,8 +16,9 @@ async def add_user(body: UserSchema, response: Response, db: Session = Depends(g
         Description: This function is used to takes the user information from user and add on Database
         Parameter: user : UserSchema  => Schema of the user
                         response : Response  it response to the user
-                        db: Session = Depends on the get_db  i.e. he yield the database
-        Return: JSON form dict in that mess:
+                        db: Session = Depends on the get_db  i.e. yield the database
+        Return: JSON form dict message, status code
+    """
         data = body.model_dump()
         data['password'] = hash_password(data['password'])
         user_super_key = data['super_key']
@@ -49,7 +50,7 @@ def user_login(body: LoginSchema, response: Response, db: Session = Depends(get_
         Description: This function is used to take the login credentials from the user and verify them
         Parameter: body : LoginSchema  => Schema of the login
                    response : Response  it response to the user
-                   db: Session = Depends on the get_db  i.e. he yield the database
+                   db: Session = Depends on the get_db  i.e. yield the database
         Return: message and status code in JSON format
     """
     try:
@@ -58,9 +59,7 @@ def user_login(body: LoginSchema, response: Response, db: Session = Depends(get_
             raise HTTPException(detail="Invalid Username", status_code=status.HTTP_400_BAD_REQUEST)
         if not verify_password(body.password, user_data.password):
             raise HTTPException(detail="Invalid Password", status_code=status.HTTP_400_BAD_REQUEST)
-        # if not user_data.is_verified:
-        #     raise HTTPException(detail="Email is Not Verified", status_code=status.HTTP_400_BAD_REQUEST)
-
+       
         token = JWT.data_encoding({'user_id': user_data.id})
         return {'message': "Login successfully ", 'status': 200, 'access_token': token}
     except Exception as ex:
@@ -73,8 +72,8 @@ def email_verification(token: str, response: Response, db: Session = Depends(get
     """
         Description: This function is used to verify the user email
         Parameter: response : Response  it response to the user
-                   db: Session = Depends on the get_db  i.e. he yield the database
-        Return: JSON form dict in that message, status code, data
+                   db: Session = Depends on the get_db  i.e. yield the database
+        Return: JSON form dict in that message, status code
     """
     try:
         decoded_data = JWT.data_decoding(token)
@@ -92,6 +91,12 @@ def email_verification(token: str, response: Response, db: Session = Depends(get
 
 @user.put('/forget/{email}', status_code=status.HTTP_200_OK, tags=["User"])
 def forget_username_password(email: str, body: LoginSchema, response: Response, db: Session = Depends(get_db)):
+    """
+        Description: This function is used to forget username and password using verified email
+        Parameter: response : Response  it response to the user
+                   db: Session = Depends on the get_db  i.e. yield the database
+        Return: JSON form dict in that message, status code
+    """
     try:
         user_data = db.query(User).filter_by(email=email).one_or_none()
         if user_data is None:
@@ -111,6 +116,12 @@ def forget_username_password(email: str, body: LoginSchema, response: Response, 
 
 @user.patch('/change_email/{email}', status_code=status.HTTP_200_OK, tags=["User"])
 def change_email(email: str, body: LoginSchema, response: Response, db: Session = Depends(get_db)):
+    """
+        Description: This function is used to verify the user email
+        Parameter: response : Response  it response to the user
+                   db: Session = Depends on the get_db  i.e. yield the database
+        Return: JSON form dict in that message, status code
+    """
     try:
         user_data = db.query(User).filter_by(user_name=body.user_name).one_or_none()
         if not user_data:
@@ -133,19 +144,4 @@ def change_email(email: str, body: LoginSchema, response: Response, db: Session 
         response.status_code = status.HTTP_400_BAD_REQUEST
         return {'message': str(ex), 'status': 400}
 
-
-
-
-# @user.get('/order_verify', status_code=status.HTTP_200_OK, tags=["User"])
-# def order_conformation_verification(token: str, response: Response, db: Session = Depends(get_db)):
-#     try:
-#         decoded_data = JWT.data_decoding(token)
-#         user_id = decoded_data.get('user_id')
-#         cart_data = db.query(Cart).filter_by(user_id=user_id).one_or_none()
-#         cart_data.is_ordered = True
-#         db.commit()
-#         return {'Message': "Order Conformed successfully", 'status': 200}
-#     except Exception as ex:
-#         response.status_code = status.HTTP_400_BAD_REQUEST
-#         return {'message': str(ex), 'status': 400}
 
